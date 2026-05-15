@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Attendance System - Login</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="login-container">
+            <div class="logo">
+                <h1>📚 QR Attendance System</h1>
+                <p>University Classroom Attendance Management</p>
+            </div>
+            
+            <div class="role-buttons">
+                <button class="role-btn active" data-role="student">Student Login</button>
+                <button class="role-btn" data-role="admin">Admin Login</button>
+            </div>
+
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username">Username / Student ID</label>
+                    <input type="text" id="username" required placeholder="Enter your username">
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" required placeholder="Enter your password">
+                </div>
+                <div class="demo-credentials">
+                    <p><strong>Demo Credentials:</strong></p>
+                    <p>👨‍🎓 Student: S001 / student123</p>
+                    <p>👨‍💼 Admin: admin / admin123</p>
+                </div>
+                <button type="submit" class="btn-primary">Login</button>
+            </form>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

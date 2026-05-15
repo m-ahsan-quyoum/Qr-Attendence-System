@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - QR Attendance</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>👑 Admin Portal</h2>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-link active" data-page="dashboard">📊 Dashboard</a>
+                <a href="#" class="nav-link" data-page="sessions">🎯 Manage Sessions</a>
+                <a href="#" class="nav-link" data-page="students">👨‍🎓 Student Management</a>
+                <a href="#" class="nav-link" data-page="records">📋 Attendance Records</a>
+                <a href="#" class="nav-link" data-page="reports">📊 Reports & Analytics</a>
+                <a href="#" class="nav-link" id="logoutBtn">🚪 Logout</a>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <div class="page-header">
+                <h1 id="pageTitle">Admin Dashboard</h1>
+                <div class="user-info">
+                    <span>Admin</span>
+                </div>
+            </div>
+
+            <div id="dashboardPage" class="page active">
+                <!-- Clickable Admin Stats Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card clickable" data-admin-stat="students">
+                        <h3>👨‍🎓 Total Students</h3>
+                        <p class="stat-number" id="totalStudents">0</p>
+                        <small class="click-hint">Click to view all students →</small>
+                    </div>
+                    <div class="stat-card clickable" data-admin-stat="sessions">
+                        <h3>🎯 Total Sessions</h3>
+                        <p class="stat-number" id="totalSessions">0</p>
+                        <small class="click-hint">Click to view all sessions →</small>
+                    </div>
+                    <div class="stat-card clickable" data-admin-stat="today">
+                        <h3>📅 Today's Attendance</h3>
+                        <p class="stat-number" id="todaysAttendance">0%</p>
+                        <small class="click-hint">Click to view today's records →</small>
+                    </div>
+                    <div class="stat-card clickable" data-admin-stat="active">
+                        <h3>🟢 Active Sessions</h3>
+                        <p class="stat-number" id="activeSessions">0</p>
+                        <small class="click-hint">Click to manage active sessions →</small>
+                    </div>
+                </div>
+
+                <!-- Present vs Absent Chart (Clickable) -->
+                <div class="chart-container clickable" id="attendanceChart">
+                    <h3>📊 Today's Attendance Overview</h3>
+                    <div class="chart-bars">
+                        <div class="chart-item">
+                            <div class="chart-bar present-bar" id="presentBar" style="width: 0%"></div>
+                            <span>✅ Present: <span id="presentCount">0</span></span>
+                        </div>
+                        <div class="chart-item">
+                            <div class="chart-bar absent-bar" id="absentBar" style="width: 0%"></div>
+                            <span>❌ Absent: <span id="absentCount">0</span></span>
+                        </div>
+                    </div>
+                    <small class="click-hint">Click to view detailed attendance →</small>
+                </div>
+
+                <div class="recent-attendance">
+                    <h3>📝 Recent Attendance Records</h3>
+                    <div class="table-container">
+                        <table id="recentAttendanceTable">
+                            <thead>
+                                <tr><th>Student</th><th>Student ID</th><th>Subject</th><th>Time</th><th>GPS</th><th>Status</th></tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div id="sessionsPage" class="page">
+                <h2>🎯 Manage Attendance Sessions</h2>
+                
+                <div class="form-card">
+                    <h3>Create New Session</h3>
+                    <form id="createSessionForm">
+                        <div class="form-group">
+                            <label>Subject Name</label>
+                            <input type="text" id="subjectName" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Description</label>
+                            <textarea id="sessionDesc" rows="2"></textarea>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>QR Expiry (minutes)</label>
+                                <input type="number" id="expiryMinutes" value="5" min="1" max="60">
+                            </div>
+                            <div class="form-group">
+                                <label>Enable Session PIN</label>
+                                <input type="checkbox" id="enablePIN">
+                            </div>
+                        </div>
+                        <div class="form-group" id="pinField" style="display: none;">
+                            <label>Session PIN (4-digit)</label>
+                            <input type="text" id="sessionPIN" maxlength="4" placeholder="1234">
+                        </div>
+                        <div class="form-group">
+                            <label>Classroom GPS Location</label>
+                            <input type="text" id="gpsLocation" value="37.7749, -122.4194">
+                        </div>
+                        <div class="form-group">
+                            <label>Attendance Radius (meters)</label>
+                            <input type="number" id="attendanceRadius" value="100">
+                        </div>
+                        <button type="submit" class="btn-primary">Create Session & Generate QR</button>
+                    </form>
+                </div>
+
+                <div class="sessions-list">
+                    <h3>Active Sessions</h3>
+                    <div id="activeSessionsList" class="sessions-grid"></div>
+                </div>
+            </div>
+
+            <div id="studentsPage" class="page">
+                <h2>👨‍🎓 Student Management</h2>
+                <button class="btn-primary" id="addStudentBtn">+ Add New Student</button>
+                
+                <div class="table-container">
+                    <table id="studentsTable">
+                        <thead>
+                            <tr><th>Student ID</th><th>Name</th><th>Email</th><th>Department</th><th>Semester</th><th>Attendance %</th><th>Actions</th></tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="recordsPage" class="page">
+                <h2>📋 All Attendance Records</h2>
+                <div class="table-container">
+                    <table id="allAttendanceTable">
+                        <thead>
+                            <tr><th>Student</th><th>Student ID</th><th>Subject</th><th>Date</th><th>Time</th><th>GPS</th><th>PIN</th><th>Status</th></tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+                <button class="btn-secondary" id="exportCSVBtn">📊 Export to CSV</button>
+            </div>
+
+            <div id="reportsPage" class="page">
+                <h2>📊 Reports & Analytics</h2>
+                
+                <!-- Clickable Student Performance Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card clickable" data-report="topStudent">
+                        <h3>🏆 Top Performer</h3>
+                        <p class="stat-number" id="topStudentName">-</p>
+                        <small>Click to view details →</small>
+                    </div>
+                    <div class="stat-card clickable" data-report="lowAttendance">
+                        <h3>⚠️ Low Attendance (<75%)</h3>
+                        <p class="stat-number" id="lowAttendanceCount">0</p>
+                        <small>Click to view list →</small>
+                    </div>
+                    <div class="stat-card clickable" data-report="perfectAttendance">
+                        <h3>⭐ Perfect Attendance</h3>
+                        <p class="stat-number" id="perfectAttendanceCount">0</p>
+                        <small>Click to view list →</small>
+                    </div>
+                    <div class="stat-card clickable" data-report="mostActive">
+                        <h3>📚 Most Active Subject</h3>
+                        <p class="stat-number" id="mostActiveSubject">-</p>
+                        <small>Click to view details →</small>
+                    </div>
+                </div>
+
+                <!-- Subject-wise Performance -->
+                <div class="form-card">
+                    <h3>📖 Subject-wise Attendance</h3>
+                    <div id="subjectWiseList" class="subject-list"></div>
+                </div>
+
+                <!-- Student Search -->
+                <div class="form-card">
+                    <h3>🔍 Search Student Attendance</h3>
+                    <div class="form-group">
+                        <input type="text" id="searchStudent" placeholder="Enter Student ID or Name" class="search-input">
+                        <button class="btn-primary" id="searchStudentBtn">Search</button>
+                    </div>
+                    <div id="studentSearchResult"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Student Modal -->
+    <div id="studentModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <h3 id="modalTitle">Add Student</h3>
+            <form id="studentForm">
+                <input type="hidden" id="editStudentId">
+                <div class="form-group"><label>Student ID</label><input type="text" id="studentIdInput" required></div>
+                <div class="form-group"><label>Full Name</label><input type="text" id="studentNameInput" required></div>
+                <div class="form-group"><label>Email</label><input type="email" id="studentEmail" required></div>
+                <div class="form-group"><label>Department</label><input type="text" id="studentDept" required></div>
+                <div class="form-group"><label>Semester</label><input type="number" id="studentSemester" required></div>
+                <div class="form-group"><label>Password</label><input type="password" id="studentPassword" required></div>
+                <button type="submit" class="btn-primary">Save</button>
+                <button type="button" class="btn-secondary" onclick="closeStudentModal()">Cancel</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Detail Modal -->
+    <div id="detailModal" class="modal" style="display: none;">
+        <div class="modal-content modal-large">
+            <h3 id="modalTitle">Details</h3>
+            <div id="modalContent"></div>
+            <button class="btn-secondary" onclick="closeDetailModal()">Close</button>
+        </div>
+    </div>
+
+    <div id="toast" class="toast"></div>
+    <script src="script.js"></script>
+</body>
+</html>
